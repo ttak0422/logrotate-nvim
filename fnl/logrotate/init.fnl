@@ -36,9 +36,9 @@
 ; precondition: path is normalized
 (fn load_timestamps [path]
   (case (io.open path :r)
-    (nil _) {}
     fp (-> (fp:read :*a)
-           (decode))))
+           (decode))
+    _ {}))
 
 ; precondition: path is normalized
 (fn save_timestamps [path timestamps]

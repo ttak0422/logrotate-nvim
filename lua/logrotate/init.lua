@@ -39,15 +39,13 @@ local function rotate(path)
   return os.rename(path, new_path)
 end
 local function load_timestamps(path)
-  local _4_, _5_ = io.open(path, "r")
-  if ((_4_ == nil) and true) then
-    local _ = _5_
-    return {}
-  elseif (nil ~= _4_) then
+  local _4_ = io.open(path, "r")
+  if (nil ~= _4_) then
     local fp = _4_
     return decode(fp:read("*a"))
   else
-    return nil
+    local _ = _4_
+    return {}
   end
 end
 local function save_timestamps(path, timestamps)
@@ -60,22 +58,22 @@ local function setup(opt)
   local opt0 = vim.tbl_deep_extend("force", default_config, (opt or {}))
   local timestamps_path = (vim.fn.expand(opt0.config_path) .. "/timestamps.json")
   local callback
-  local function _7_()
+  local function _6_()
     local timestamps = load_timestamps(timestamps_path)
-    local function _8_(target)
+    local function _7_(target)
       local target0 = vim.fn.expand(target)
       local now = os.time()
       local timestamp
-      local _10_
+      local _9_
       do
-        local t_9_ = timestamps
-        if (nil ~= t_9_) then
-          t_9_ = t_9_[target0]
+        local t_8_ = timestamps
+        if (nil ~= t_8_) then
+          t_8_ = t_8_[target0]
         else
         end
-        _10_ = t_9_
+        _9_ = t_8_
       end
-      timestamp = (_10_ or now)
+      timestamp = (_9_ or now)
       if rotate_3f(opt0.interval, timestamp, now) then
         rotate(target0)
         timestamps[target0] = now
@@ -84,10 +82,10 @@ local function setup(opt)
         return nil
       end
     end
-    vim.iter(opt0.targets):each(_8_)
+    vim.iter(opt0.targets):each(_7_)
     return save_timestamps(timestamps_path, timestamps)
   end
-  callback = _7_
+  callback = _6_
   do
     local path = vim.fn.expand(opt0.config_path)
     if not dir_3f(path) then
