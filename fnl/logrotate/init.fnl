@@ -33,12 +33,14 @@
         new_path (.. dir "/" name "_" timestamp "." ext)]
     (os.rename path new_path)))
 
+; precondition: path is normalized
 (fn load_timestamps [path]
   (case (io.open path :r)
     (nil _) {}
     fp (-> (fp:read :*a)
            (decode))))
 
+; precondition: path is normalized
 (fn save_timestamps [path timestamps]
   (doto (io.open path :w)
     (: :write (encode timestamps))
