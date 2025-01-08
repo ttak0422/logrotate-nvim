@@ -79,6 +79,7 @@ local function setup(opt)
         timestamps[target0] = now
         return nil
       else
+        timestamps[target0] = timestamp
         return nil
       end
     end

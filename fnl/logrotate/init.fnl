@@ -59,7 +59,8 @@
                             (if (rotate? opt.interval timestamp now)
                                 (do
                                   (rotate target)
-                                  (tset timestamps target now))))))
+                                  (tset timestamps target now))
+                                (tset timestamps target timestamp)))))
                      (save_timestamps timestamps_path timestamps)))]
     ;; setup directory if needed
     (let [path (vim.fn.expand opt.config_path)]
