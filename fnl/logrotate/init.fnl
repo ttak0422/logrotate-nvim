@@ -21,8 +21,7 @@
       :daily (> diff 86400)
       :weekly (> diff 604800)
       :monthly (> diff 2592000)
-      _ (do
-          (error (.. "Unknown interval: " interval)) false))))
+      _ (error (.. "Unknown interval: " interval)))))
 
 ; precondition: path is normalized
 (fn rotate [path]
@@ -36,8 +35,7 @@
 ; precondition: path is normalized
 (fn load_timestamps [path]
   (case (io.open path :r)
-    fp (-> (fp:read :*a)
-           (decode))
+    fp (decode (fp:read :*a))
     _ {}))
 
 ; precondition: path is normalized

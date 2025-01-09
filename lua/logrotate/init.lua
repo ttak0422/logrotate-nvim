@@ -26,8 +26,7 @@ local function rotate_3f(interval, t1, t2)
     return (diff > 2592000)
   else
     local _ = interval
-    error(("Unknown interval: " .. interval))
-    return false
+    return error(("Unknown interval: " .. interval))
   end
 end
 local function rotate(path)
