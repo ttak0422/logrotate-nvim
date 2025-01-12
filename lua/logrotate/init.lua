@@ -1,21 +1,8 @@
 -- [nfnl] Compiled from fnl/logrotate/init.fnl by https://github.com/Olical/nfnl, do not edit.
-local default_config = {targets = {}, config_path = (vim.fn.stdpath("data") .. "/logrotate"), interval = "weekly"}
+local default_config = {targets = {}, config_path = (vim.fn.stdpath("data") .. "/logrotate.json"), interval = "weekly"}
 local encode = vim.fn.json_encode
 local decode = vim.fn.json_decode
 local group = vim.api.nvim_create_augroup("logrotate", {clear = true})
-local function dir_3f(path)
-  local tmp_3_auto = vim.uv.fs_stat(path)
-  if (nil ~= tmp_3_auto) then
-    local tmp_3_auto0 = tmp_3_auto[type]
-    if (nil ~= tmp_3_auto0) then
-      return (tmp_3_auto0 == "directory")
-    else
-      return nil
-    end
-  else
-    return nil
-  end
-end
 local function rotate_3f(interval, t1, t2)
   local diff = math.abs((t1 - t2))
   if (interval == "daily") then
@@ -38,12 +25,12 @@ local function rotate(path)
   return os.rename(path, new_path)
 end
 local function load_timestamps(path)
-  local _4_ = io.open(path, "r")
-  if (nil ~= _4_) then
-    local fp = _4_
+  local _2_ = io.open(path, "r")
+  if (nil ~= _2_) then
+    local fp = _2_
     return decode(fp:read("*a"))
   else
-    local _ = _4_
+    local _ = _2_
     return {}
   end
 end
@@ -55,24 +42,24 @@ local function save_timestamps(path, timestamps)
 end
 local function setup(opt)
   local opt0 = vim.tbl_deep_extend("force", default_config, (opt or {}))
-  local timestamps_path = (vim.fn.expand(opt0.config_path) .. "/timestamps.json")
+  local timestamps_path = vim.fn.expand(opt0.config_path)
   local callback
-  local function _6_()
+  local function _4_()
     local timestamps = load_timestamps(timestamps_path)
-    local function _7_(target)
+    local function _5_(target)
       local target0 = vim.fn.expand(target)
       local now = os.time()
       local timestamp
-      local _9_
+      local _7_
       do
-        local t_8_ = timestamps
-        if (nil ~= t_8_) then
-          t_8_ = t_8_[target0]
+        local t_6_ = timestamps
+        if (nil ~= t_6_) then
+          t_6_ = t_6_[target0]
         else
         end
-        _9_ = t_8_
+        _7_ = t_6_
       end
-      timestamp = (_9_ or now)
+      timestamp = (_7_ or now)
       if rotate_3f(opt0.interval, timestamp, now) then
         rotate(target0)
         timestamps[target0] = now
@@ -82,17 +69,10 @@ local function setup(opt)
         return nil
       end
     end
-    vim.iter(opt0.targets):each(_7_)
+    vim.iter(opt0.targets):each(_5_)
     return save_timestamps(timestamps_path, timestamps)
   end
-  callback = _6_
-  do
-    local path = vim.fn.expand(opt0.config_path)
-    if not dir_3f(path) then
-      vim.uv.fs_mkdir(path, 493)
-    else
-    end
-  end
+  callback = _4_
   return vim.api.nvim_create_autocmd({"VimLeave"}, {group = group, callback = callback})
 end
 return {setup = setup}

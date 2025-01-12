@@ -1,19 +1,13 @@
 (local default_config {; target file paths: string[]
                        :targets []
-                       ; logrotate-nvim config path: string
-                       :config_path (.. (vim.fn.stdpath :data) :/logrotate)
+                       ; logrotate-nvim config file path: string
+                       :config_path (.. (vim.fn.stdpath :data) :/logrotate.json)
                        ; rotate inverval: "daily" | "weekly" | "monthly"
                        :interval :weekly})
 
 (local encode vim.fn.json_encode)
 (local decode vim.fn.json_decode)
 (local group (vim.api.nvim_create_augroup :logrotate {:clear true}))
-
-; precondition: path is normalized
-(fn dir? [path]
-  (-?> (vim.uv.fs_stat path)
-       (. type)
-       (= :directory)))
 
 (fn rotate? [interval t1 t2]
   (let [diff (math.abs (- t1 t2))]
@@ -46,7 +40,7 @@
 
 (fn setup [opt]
   (let [opt (vim.tbl_deep_extend :force default_config (or opt {}))
-        timestamps_path (.. (vim.fn.expand opt.config_path) :/timestamps.json)
+        timestamps_path (vim.fn.expand opt.config_path)
         callback (fn []
                    (let [timestamps (load_timestamps timestamps_path)]
                      (: (vim.iter opt.targets) :each
@@ -60,10 +54,6 @@
                                   (tset timestamps target now))
                                 (tset timestamps target timestamp)))))
                      (save_timestamps timestamps_path timestamps)))]
-    ;; setup directory if needed
-    (let [path (vim.fn.expand opt.config_path)]
-      (if (not (dir? path))
-          (vim.uv.fs_mkdir path 493)))
     ;; create autocmd
     (vim.api.nvim_create_autocmd [:VimLeave] {: group : callback})))
 
