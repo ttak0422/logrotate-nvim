@@ -4,6 +4,10 @@
 > This plugin does not aim to faithfully reproduce the logrotate command.
 
 ## usage
+
+> [!IMPORTANT]
+> `logrotate-nvim` is currently only compatible with Neovim 0.10+ or later.
+
 ```lua
 -- minimal
 require("logrotate").setup()
