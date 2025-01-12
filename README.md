@@ -1,5 +1,8 @@
 # logrotate-nvim
 
+> [!NOTE]
+> This plugin does not aim to faithfully reproduce the logrotate command.
+
 ## usage
 ```lua
 -- minimal
