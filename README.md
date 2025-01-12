@@ -13,7 +13,7 @@ require("logrotate").setup({
     -- lotate interval. 
     -- e.g. "daily" | "weekly" | "monthly"
     interval = "weekly", 
-    -- directory path of files used internally, such as timestamps.
-    config_path = vim.fn.stdpath("data") .. "/logrotate",
+    -- path to the configuration file
+    config_path = vim.fn.stdpath("data") .. "/logrotate.json",
 })
 ```
